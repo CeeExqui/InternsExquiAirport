@@ -4,7 +4,7 @@ table 80500 Airport
 
     fields
     {
-        field(1; "No."; Code[4])
+        field(1; "No."; Code[20])
         {
             SqlDataType = "Varchar";
 
@@ -12,7 +12,8 @@ table 80500 Airport
         field(2; Name; Text[50])
         {
         }
-        field(3; "City"; Text[30])
+        field(3; "Country/Region Code"; Text[50]) { TableRelation = "Country/Region".code; }
+        field(4; "City"; Text[30])
         {
             Caption = 'City';
             OptimizeForTextSearch = true;
@@ -22,7 +23,7 @@ table 80500 Airport
             ValidateTableRelation = false;
             ToolTip = 'Specifies the customer''s city.';
         }
-        field(4; "Country/Region Code"; Text[50]) { TableRelation = "Country/Region".code; }
+
         field(5; OperatingSatus; Enum "Operating Status") { }
 
     }

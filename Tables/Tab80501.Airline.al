@@ -25,7 +25,11 @@ table 80501 Airline
         }
         field(5; "Total Ammount of Aircraft"; Integer)
         {
-            //flowfield
+            CalcFormula = count("Air Craft" where("Airline No." = field("No.")
+            ));
+            Caption = 'Inventory';
+            Editable = false;
+            FieldClass = FlowField;
         }
     }
 
