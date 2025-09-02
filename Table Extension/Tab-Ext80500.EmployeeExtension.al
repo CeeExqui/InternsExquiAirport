@@ -5,7 +5,7 @@ tableextension 80500 "Employee Extension " extends Employee
         field(80500; "Fixed Salary"; Boolean)
         {
         }
-        field(80501; "Hourly Rate"; Decimal) { }
+
         field(85002; "Salary"; Decimal) { }
         field(85003; "Airport"; Code[20])
         {
