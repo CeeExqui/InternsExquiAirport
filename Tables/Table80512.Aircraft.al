@@ -9,6 +9,7 @@ table 80512 "Aircraft"
         {
             Caption = 'Registration No.';
             NotBlank = true;
+            Editable = false;
             DataClassification = CustomerContent;
         }
         field(2; "Model"; Text[50])
@@ -54,13 +55,31 @@ table 80512 "Aircraft"
             TableRelation = "Airline"."No.";
             DataClassification = CustomerContent;
         }
+        field(9; "Total Maintenance Cost"; Decimal)
+        {
+            Caption = 'Total Maintenance Cost';
+            //we use FlowField Here because it is using pre Calculated Fields
+            FieldClass = FlowField;
+            //take the Total Cost of the Aircraft based on the Reg No. and display it here 
+            CalcFormula = sum("Aircaft Maintenance"."Total Cost" where("Aircraft Registration No." = field("Registration No.")));
+            Editable = false;
+        }
+
+        field(10; "Last Maintenance Date"; Date)
+        {
+            Caption = 'Last Maintenance Date';
+            FieldClass = FlowField;
+            //take the enddate of the selected Aircaft, Reg No. and Display it here
+            CalcFormula = max("Aircaft Maintenance"."End Date"where("Aircraft Registration No." = field ("Registration No.")));
+            Editable = false;
+        }
     }
 
     keys
     {
         key(PK; "Registration No.") { Clustered = true; }
-        key(AirlineIndex; "Airline No.") { }
-        key(TypeIndex; Type) { }
+        key(Airline; "Airline No.") { }
+        key(Type; Type) { }
     }
 
     fieldgroups
