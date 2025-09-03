@@ -3,25 +3,28 @@ table 80512 "Aircraft"
     Caption = 'Aircraft';
     DataClassification = CustomerContent;
 
+
     fields
     {
         field(1; "Registration No."; Code[20])
         {
             Caption = 'Registration No.';
             NotBlank = true;
-            Editable = false;
             DataClassification = CustomerContent;
         }
-        field(2; "Model"; Text[50])
-        {
-            Caption = 'Model';
-            DataClassification = CustomerContent;
-        }
-        field(3; "Manufacturer"; Code[20])
+        field(2; "Manufacturer"; Code[20])
         {
             Caption = 'Manufacturer';
             TableRelation = Manufacturer.Code;
             DataClassification = CustomerContent;
+        }
+
+        field(3; "Model"; Text[50])
+        {
+            Caption = 'Model';
+            DataClassification = CustomerContent;
+
+            TableRelation = "Manufacturer Model".Code where("Manufacturer Code" = field("Manufacturer"));
         }
 
         field(4; "Capacity People"; Integer)
@@ -48,6 +51,11 @@ table 80512 "Aircraft"
         {
             Caption = 'Type';
             DataClassification = CustomerContent;
+            trigger OnValidate()
+            begin
+                if ("Type" <> "Type"::Passenger) then
+                    Clear("Type");
+            end;
         }
         field(8; "Airline No."; Code[2])
         {
@@ -70,7 +78,7 @@ table 80512 "Aircraft"
             Caption = 'Last Maintenance Date';
             FieldClass = FlowField;
             //take the enddate of the selected Aircaft, Reg No. and Display it here
-            CalcFormula = max("Aircaft Maintenance"."End Date"where("Aircraft Registration No." = field ("Registration No.")));
+            CalcFormula = max("Aircaft Maintenance"."End Date" where("Aircraft Registration No." = field("Registration No.")));
             Editable = false;
         }
     }
