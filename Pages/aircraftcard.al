@@ -34,6 +34,14 @@ page 80513 "Aircraft Card"
                 {
                     ApplicationArea = All;
                 }
+                field("Length(m)"; Rec."Aircraft Length (m)")
+                {
+                    ApplicationArea = All;
+                }
+                field("Width(m)"; Rec."Aircraft Width (m)")
+                {
+                    ApplicationArea = All;
+                }
             }
 
             group(Capacity)

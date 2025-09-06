@@ -16,7 +16,7 @@ page 80512 "Aircraft List"
                 field("Registration No."; Rec."Registration No.")
                 {
                     ApplicationArea = All;
-                    
+
                 }
                 field(Manufacturer; Rec.Manufacturer)
                 {
@@ -31,6 +31,14 @@ page 80512 "Aircraft List"
                     ApplicationArea = All;
                 }
                 field("Airline No."; Rec."Airline No.")
+                {
+                    ApplicationArea = All;
+                }
+                field("Length(m)"; Rec."Aircraft Length (m)")
+                {
+                    ApplicationArea = All;
+                }
+                field("Width(m)"; Rec."Aircraft Width (m)")
                 {
                     ApplicationArea = All;
                 }

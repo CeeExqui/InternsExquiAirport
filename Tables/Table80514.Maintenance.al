@@ -33,8 +33,10 @@ table 80514 "Aircaft Maintenance"
 
             trigger OnValidate()
             begin
-                // the +1 is to handle the difference so if a start = end it displays 1D and not 0D 
-                "Duration" := ("End Date" - "Start Date") + 1;
+                if ("Start Date" <> 0D) and ("End Date" <> 0D) then
+                    "Duration" := ("End Date" - "Start Date") + 1
+                else
+                    "Duration" := 0;
             end;
 
         }
@@ -44,8 +46,10 @@ table 80514 "Aircaft Maintenance"
             DataClassification = CustomerContent;
             trigger OnValidate()
             begin
-                // the +1 is to handle the difference so if a start = end it displays 1D and not 0D 
-                "Duration" := ("End Date" - "Start Date") + 1;
+                if ("Start Date" <> 0D) and ("End Date" <> 0D) then
+                    "Duration" := ("End Date" - "Start Date") + 1
+                else
+                    "Duration" := 0;
             end;
 
         }
@@ -59,6 +63,7 @@ table 80514 "Aircaft Maintenance"
         {
             Caption = 'Description';
             DataClassification = CustomerContent;
+            CharAllowed = 'AZ';
         }
         field(8; "Part Cost"; Decimal)
         {
@@ -93,7 +98,9 @@ table 80514 "Aircaft Maintenance"
             MinValue = 0;
             Editable = false; // computed automatically based on user input
             DataClassification = CustomerContent;
+
         }
+
 
     }
     keys

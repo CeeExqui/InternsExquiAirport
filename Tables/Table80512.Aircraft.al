@@ -81,6 +81,14 @@ table 80512 "Aircraft"
             CalcFormula = max("Aircaft Maintenance"."End Date" where("Aircraft Registration No." = field("Registration No.")));
             Editable = false;
         }
+        field(11; "Aircraft Length (m)"; Integer)
+        {
+            Caption = 'Length (m)';
+        }
+        field(12; "Aircraft Width (m)"; Integer)
+        {
+            Caption = 'Width (m)';
+        }
     }
 
     keys
