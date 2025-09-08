@@ -17,7 +17,9 @@ page 80519 "Flight Schedule List"
                 field("Runway ID"; Rec."Runway ID") { }
                 field("From Airport Code"; Rec."From Airport Code") { }
                 field("To Airport Code"; Rec."To Airport Code") { }
-                field("Scheduled Time"; Rec."Scheduled Time") { }
+                field("Scheduled Time"; Rec."Scheduled Date") { }
+                field("Departure Time"; Rec."Departure Time") { }
+                field("Landing Time"; Rec."Landing Time") { }
                 field("Status"; Rec.Status) { }
             }
         }

@@ -3,7 +3,7 @@ page 80521 "Completed Flights"
     PageType = List;
     SourceTable = "Completed Flights";
     ApplicationArea = All;
-    UsageCategory = ReportsAndAnalysis;
+    UsageCategory = Lists;
     layout
     {
         area(content)
@@ -14,7 +14,7 @@ page 80521 "Completed Flights"
                 field("Aircraft Reg No."; Rec."Aircraft Reg No.") { }
                 field("Airline No."; Rec."Airline No.") { }
                 field("Runway ID"; Rec."Runway ID") { }
-                field("Scheduled Time"; Rec."Scheduled Time") { }
+                field("Scheduled Time"; Rec."Scheduled Date") { }
                 field("Status"; Rec.Status) { }
             }
         }

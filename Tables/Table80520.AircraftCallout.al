@@ -1,5 +1,13 @@
 table 80524 "Aircraft Callout"
 {
+    Caption = 'Flight Schedule';
+    DataCaptionFields = "Callout ID";
+    DataClassification = CustomerContent;
+    LookupPageId = "Aircraft Callout List";     
+    DrillDownPageId = "Aircraft Callout List";  
+    Access = Public;                           
+    Permissions = tabledata "Aircraft Callout" = RIMD; 
+
     fields
     {
         field(1; "Callout ID"; Code[20]) { }
