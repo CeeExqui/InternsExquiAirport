@@ -34,7 +34,7 @@ page 80515 "Aircraft Maintenance Card"
             group(Employees)
             {
                 Caption = 'Employees Worked';
-                part(EmpList; "Maintenance Employees")
+                part(EmployeeMaintenanceLink; "Maintenance Employees")
                 {
                     ApplicationArea = All;
                     SubPageLink = "Maintenance Entry No." = field("Entry No.");
