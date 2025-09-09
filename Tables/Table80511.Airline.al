@@ -6,8 +6,8 @@ table 80511 "Airline"
     TableType = Normal;              // Normal/Temporary
     DataPerCompany = true;           // Scope of data (true = per company)
     Description = 'Airline master data. Two-letter code';
-    //DrillDownPageId = "Airline List"; 
-    //LookupPageId = "Airline List";    
+    DrillDownPageId = "Airline List";
+    LookupPageId = "Airline List";
 
     fields
     {

@@ -4,6 +4,10 @@ page 80521 "Completed Flights"
     SourceTable = "Completed Flights";
     ApplicationArea = All;
     UsageCategory = Lists;
+    Editable = false;
+    InsertAllowed = false;
+    ModifyAllowed = false;
+    DeleteAllowed = false;
     layout
     {
         area(content)

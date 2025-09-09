@@ -3,16 +3,17 @@ table 80522 "Flight Schedule"
     Caption = 'Flight Schedule';
     DataCaptionFields = "Flight ID", "Airline No.";
     DataClassification = CustomerContent;
-    LookupPageId = "Flight Schedule List";     
-    DrillDownPageId = "Flight Schedule List";  
-    Access = Public;                           
-    Permissions = tabledata "Flight Schedule" = RIMD; 
+    LookupPageId = "Flight Schedule List";
+    DrillDownPageId = "Flight Schedule List";
+    Access = Public;
+    Permissions = tabledata "Flight Schedule" = RIMD;
 
     fields
     {
         field(1; "Flight ID"; Code[20])
         {
             Caption = 'Flight ID';
+
         }
         field(2; "Aircraft Reg No."; Code[20])
         {
@@ -106,6 +107,7 @@ table 80522 "Flight Schedule"
                     CompletedFlights."Scheduled Date" := Rec."Scheduled Date";
                     CompletedFlights.Status := Rec.Status;
 
+
                     if CompletedFlights.Insert(true) then
                         Rec.Delete(true);
                 end;
@@ -138,6 +140,8 @@ table 80522 "Flight Schedule"
     keys
     {
         key(PK; "Flight ID") { Clustered = true; }
+        key(ArrivalsByAirport; "Flight Type", "To Airport Code", "Scheduled Date") { }
+        key(DeparturesByAirport; "Flight Type", "From Airport Code", "Scheduled Date") { }
     }
 
     trigger OnInsert()

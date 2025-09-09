@@ -5,6 +5,7 @@ page 80514 "Aircraft Maintenance List"
     ApplicationArea = All;
     UsageCategory = Lists;
     Caption = 'Aircraft Maintenance';
+    CardPageId = "Aircraft Maintenance Card";
 
     layout
     {

@@ -17,8 +17,23 @@ table 80512 "Aircraft"
             Caption = 'Manufacturer';
             TableRelation = Manufacturer.Code;
             DataClassification = CustomerContent;
-        }
 
+            trigger OnValidate()
+            var
+                test: Record Manufacturer;
+            begin
+                if test.Get("Manufacturer") then
+                    "Manufacturer Name" := test.Name
+                else
+                    Clear("Manufacturer Name");
+            end;
+        }
+        field(13; "Manufacturer Name"; Text[100])
+        {
+            Caption = 'Manufacturer Name';
+            Editable = false;
+            DataClassification = CustomerContent;
+        }
         field(3; "Model"; Text[50])
         {
             Caption = 'Model';
@@ -84,10 +99,12 @@ table 80512 "Aircraft"
         field(11; "Aircraft Length (m)"; Integer)
         {
             Caption = 'Length (m)';
+            MinValue = 0; 
         }
         field(12; "Aircraft Width (m)"; Integer)
         {
             Caption = 'Width (m)';
+            MinValue = 0;
         }
     }
 

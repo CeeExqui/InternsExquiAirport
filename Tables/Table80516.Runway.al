@@ -27,6 +27,7 @@ table 80516 "Runway"
         {
             Caption = 'Airport Code';
             TableRelation = Airport."No.";
+            Editable = false;
         }
     }
     keys

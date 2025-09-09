@@ -5,6 +5,7 @@ page 80515 "Aircraft Maintenance Card"
     ApplicationArea = All;
     Caption = 'Aircraft Maintenance';
 
+
     layout
     {
         area(content)
@@ -29,6 +30,16 @@ page 80515 "Aircraft Maintenance Card"
                 field("Part Cost"; Rec."Part Cost") { ApplicationArea = All; }
                 field("Labor Cost"; Rec."Labor Cost") { ApplicationArea = All; }
                 field("Total Cost"; Rec."Total Cost") { ApplicationArea = All; Editable = false; }
+            }
+            group(Employees)
+            {
+                Caption = 'Employees Worked';
+                part(EmpList; "Maintenance Employees")
+                {
+                    ApplicationArea = All;
+                    SubPageLink = "Maintenance Entry No." = field("Entry No.");
+                    Editable = false;
+                }
             }
         }
     }

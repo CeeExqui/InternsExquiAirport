@@ -22,6 +22,10 @@ page 80513 "Aircraft Card"
                 {
                     ApplicationArea = All;
                 }
+                field(ManufacturerName; Rec."Manufacturer Name")
+                {
+                    ApplicationArea = All;
+                }
                 field(Model; Rec.Model)
                 {
                     ApplicationArea = All;
