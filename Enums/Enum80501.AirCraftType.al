@@ -14,4 +14,10 @@ enum 80501 "Air Craft Type"
     {
         Caption = 'Private';
     }
+    value(3; "Military Plane")
+    {
+        Caption = 'Private';
+    }
+
+
 }

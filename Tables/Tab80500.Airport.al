@@ -1,37 +1,56 @@
 table 80500 Airport
 {
-    Caption = 'Airport';
+    CaptionML = ENU = 'Airport', ESP = 'Aeropuerto', FRA = 'Aéroport';
 
     fields
     {
-        field(1; "No."; Code[20])
+        field(1; "No."; Code[3])
         {
-            SqlDataType = "Varchar";
+            CharAllowed = 'AZ';
+            NotBlank = true;
+            trigger OnValidate()
+            begin
 
+                if (StrLen("No.") < 3) then begin
+                    Error('Please enter exactly 3 Characters');
+                end;
+            end;
         }
         field(2; Name; Text[50])
         {
         }
-        field(3; "Country/Region Code"; Text[50]) { TableRelation = "Country/Region".code; }
+
+        field(3; "Post Code"; Code[20])
+        {
+            TableRelation = "Post Code".Code;
+            NotBlank = true;
+        }
+
         field(4; "City"; Text[30])
         {
             Caption = 'City';
+            NotBlank = true;
             OptimizeForTextSearch = true;
-            TableRelation = if ("Country/Region Code" = const('')) "Post Code".City
+            TableRelation = if ("Post Code" = const('')) "Post Code".City
             else
-            if ("Country/Region Code" = filter(<> '')) "Post Code".City where("Country/Region Code" = field("Country/Region Code"));
-            ValidateTableRelation = false;
+            if ("Post Code" = filter(<> '')) "Post Code".City where("Code" = field("Post Code"));
+            ValidateTableRelation = true;
             ToolTip = 'Specifies the customer''s city.';
         }
 
-        field(5; OperatingSatus; Enum "Operating Status") { }
+
+
+        field(5; OperatingStatus; Enum "Operating Status") { }
 
     }
-    // keys
-    // {
-    //     key(PK; "")
-    //     {
-    //         Clustered = true;
-    //     }
-}
+    keys
+    {
+        key(PK; "No.")
+        {
+            Clustered = true;
+        }
 
+
+    }
+
+}
