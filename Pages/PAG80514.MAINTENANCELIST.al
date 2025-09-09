@@ -25,19 +25,4 @@ page 80514 "Aircraft Maintenance List"
             }
         }
     }
-
-    actions
-    {
-        area(processing)
-        {
-            action("New Maintenance")
-            {
-                ApplicationArea = All;
-                Caption = 'New Maintenance';
-                Image = New;
-                RunObject = page "Aircraft Maintenance Card";
-                RunPageMode = Create;
-            }
-        }
-    }
 }

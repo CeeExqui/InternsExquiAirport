@@ -44,19 +44,4 @@ page 80515 "Aircraft Maintenance Card"
         }
     }
 
-    actions
-    {
-        area(navigation)
-        {
-            group(Tasks)
-            {
-                action("Back to List")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Back to List';
-                    RunObject = page "Aircraft Maintenance List";
-                }
-            }
-        }
-    }
 }
