@@ -6,6 +6,7 @@ page 80512 "Aircraft List"
     ApplicationArea = All;
     UsageCategory = Lists;
     CardPageId = "Aircraft Card"; // drill down to card
+    
 
     layout
     {

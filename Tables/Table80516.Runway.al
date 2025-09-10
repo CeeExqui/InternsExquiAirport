@@ -2,16 +2,18 @@ table 80516 "Runway"
 {
     Caption = 'Runway List';
     DataClassification = CustomerContent;
-    DrillDownPageId = "Runway List";        
-    LookupPageId = "Runway List";           
-    Permissions = tabledata Runway = RIMD; 
-    Access = Public;   
-                         
+    DrillDownPageId = "Runway List";
+    LookupPageId = "Runway List";
+    Permissions = tabledata Runway = RIMD;
+    Access = Public;
+
     fields
     {
         field(1; "Runway ID"; Code[10])
         {
             Caption = 'Runway ID';
+            NotBlank = true;
+
         }
         field(2; "Length (m)"; Integer)
         {
@@ -26,12 +28,21 @@ table 80516 "Runway"
         field(4; "Airport Code"; Code[10])
         {
             Caption = 'Airport Code';
+            NotBlank = true;
             TableRelation = Airport."No.";
-            Editable = false;
+            trigger OnValidate()
+            begin
+                if (xRec."Airport Code" <> Rec."Airport Code") and
+                (Rec."Airport Code" <> '') and
+                (xRec."Airport Code" <> '') then
+                    Error('Cannot Change the Airport Code');
+            end;
         }
     }
     keys
     {
-        key(PK; "Runway ID") { Clustered = true; }
+        key(PK; "Airport Code", "Runway ID") { Clustered = true; }
     }
+
+
 }

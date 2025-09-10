@@ -1,7 +1,7 @@
 page 80513 "Aircraft Card"
 {
     Caption = 'Aircraft Card';
-    PageType = Card;
+
     SourceTable = "Aircraft";
     ApplicationArea = All;
     UsageCategory = Tasks;

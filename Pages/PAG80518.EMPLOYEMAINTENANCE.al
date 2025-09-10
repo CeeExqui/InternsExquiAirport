@@ -1,6 +1,6 @@
 page 80518 "Maintenance Employees"
 {
-    PageType = ListPart;
+    PageType = List;
     SourceTable = "Maintenance Employee Link";
     ApplicationArea = All;
     UsageCategory = Lists;

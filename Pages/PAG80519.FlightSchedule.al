@@ -12,7 +12,7 @@ page 80519 "Flight Schedule List"
             repeater(Group)
             {
                 field("Flight ID"; Rec."Flight ID") { }
-                field("CallOutID"; Rec." Callout ID ") { }
+                field("CallOutID"; Rec."Callout ID") { }
                 field("Airline No."; Rec."Airline No.") { }
                 field("Runway ID"; Rec."Runway ID") { }
                 field("From Airport Code"; Rec."From Airport Code") { }

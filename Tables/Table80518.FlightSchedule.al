@@ -13,17 +13,19 @@ table 80522 "Flight Schedule"
         field(1; "Flight ID"; Code[20])
         {
             Caption = 'Flight ID';
-
+            NotBlank = true;
         }
         field(2; "Aircraft Reg No."; Code[20])
         {
             TableRelation = Aircraft."Registration No.";
+            NotBlank = true;
         }
 
-        field(3; " Callout ID "; Code[20])
+        field(3; "Callout ID"; Code[20])
         {
-            TableRelation = "Aircraft Callout"."Callout ID";
+            TableRelation = "Aircraft Callout"."User Callout Code" where("Airline No." = field("Airline No."));
         }
+
         field(4; "Airline No."; Code[2])
         {
             TableRelation = Airline."No.";
@@ -31,21 +33,29 @@ table 80522 "Flight Schedule"
         field(5; "Airport Code"; Code[10])
         {
             TableRelation = Airport."No.";
+            ObsoleteState = Removed;
+            ObsoleteReason = 'Changed Runway Functionality';
+            ObsoleteTag = 'v1.4.0';
+
         }
         field(6; "Runway ID"; Code[10])
         {
             Caption = 'Runway ID';
-            TableRelation = Runway."Runway ID";
+            TableRelation =
+            if ("Flight Type" = const(Arrival)) Runway."Runway ID" where("Airport Code" = field("To Airport Code"))
+            else if ("Flight Type" = const(Departure)) Runway."Runway ID" where("Airport Code" = field("From Airport Code"))
+            else
+            Runway."Runway ID";
             trigger OnValidate()
             var
                 AircraftCallout: Record "Aircraft Callout";
                 Aircraft: Record Aircraft;
                 Runway: Record Runway;
             begin
-                if " Callout ID " = '' then
+                if "Callout ID" = '' then
                     Error('Please select an aircraft callout before assigning a runway.');
                 //make sure that the callout chosen exists
-                if not AircraftCallout.Get(" Callout ID ") then
+                if not AircraftCallout.Get("Callout ID") then
                     Error('Callout not found.');
                 //check in the callout list for the reg no of the aircraft
                 if not Aircraft.Get(AircraftCallout."Aircraft Reg No.") then
@@ -60,11 +70,48 @@ table 80522 "Flight Schedule"
                         Aircraft."Aircraft Width (m)",
                         Runway."Width (m)"
                     );
+                begin
+                    if "Callout ID" = '' then
+                        Error('Please select an aircraft callout before assigning a runway.');
+
+                    if not AircraftCallout.Get("Callout ID") then
+                        Error('Callout not found.');
+
+                    if not Aircraft.Get(AircraftCallout."Aircraft Reg No.") then
+                        Error('Related aircraft not found.');
+
+                    if not Runway.Get("Runway ID") then
+                        Error('Runway not found.');
+
+                    case "Flight Type" of
+                        "Flight Type"::Arrival:
+                            begin
+                                if "To Airport Code" = '' then
+                                    Error('Select the To Airport before choosing a runway.');
+
+                                if Runway."Airport Code" <> "To Airport Code" then
+                                    Error('Selected runway belongs to airport %1, but this flight arrives to %2.',
+                                          Runway."Airport Code", "To Airport Code");
+                            end;
+
+                        "Flight Type"::Departure:
+                            begin
+                                if "From Airport Code" = '' then
+                                    Error('Select the From Airport before choosing a runway.');
+
+                                if Runway."Airport Code" <> "From Airport Code" then
+                                    Error('Selected runway belongs to airport %1, but this flight departs from %2.',
+                                          Runway."Airport Code", "From Airport Code");
+                            end;
+                    end;
+                end;
             end;
+
         }
-        field(7; "Flight Type"; Option)
+        field(7; "Flight Type"; Option) //Done
         {
-            OptionMembers = Arrival,Departure;
+            OptionMembers = " ",Arrival,Departure;
+            ValuesAllowed = 1, 2;
         }
         field(8; "Scheduled Time"; DateTime)
         {
@@ -84,35 +131,23 @@ table 80522 "Flight Schedule"
         {
             Caption = 'Landing Time';
         }
-        field(12; "Status"; Enum "Flight Status")
+        field(12; "Status"; Enum "Flight Status") //DONE 
         {
             trigger OnValidate()
             var
-                fiveMin: Duration;
-                oldLanding: Time;
-                newLanding: Time;
                 CompletedFlights: Record "Completed Flights";
             begin
                 if (xRec.Status <> Rec.Status) and
-                    ((Rec.Status = Rec.Status::Landed) or
+                ((Rec.Status = Rec.Status::Landed) or
                     (Rec.Status = Rec.Status::Departed) or
                     (Rec.Status = Rec.Status::Completed))
                 then begin
-
                     CompletedFlights.Init();
-                    CompletedFlights."Flight ID" := Rec."Flight ID";
-                    CompletedFlights."Aircraft Reg No." := Rec."Aircraft Reg No.";
-                    CompletedFlights."Airline No." := Rec."Airline No.";
-                    CompletedFlights."Runway ID" := Rec."Runway ID";
-                    CompletedFlights."Scheduled Date" := Rec."Scheduled Date";
-                    CompletedFlights.Status := Rec.Status;
-
-
+                    CompletedFlights.TransferFields(Rec);
                     if CompletedFlights.Insert(true) then
                         Rec.Delete(true);
                 end;
             end;
-
         }
 
 
@@ -139,7 +174,7 @@ table 80522 "Flight Schedule"
 
     keys
     {
-        key(PK; "Flight ID") { Clustered = true; }
+        key(PK; "Flight ID", "Airline No.", "Callout ID") { Clustered = true; }
         key(ArrivalsByAirport; "Flight Type", "To Airport Code", "Scheduled Date") { }
         key(DeparturesByAirport; "Flight Type", "From Airport Code", "Scheduled Date") { }
     }

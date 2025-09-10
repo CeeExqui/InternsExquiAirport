@@ -24,6 +24,6 @@ table 80521 "Maintenance Employee Link"
 
     keys
     {
-        key(PK; "Entry No.") { Clustered = true; }
+        key(PK; "Maintenance Entry No.", "Employee ID") { Clustered = true; }
     }
 }
