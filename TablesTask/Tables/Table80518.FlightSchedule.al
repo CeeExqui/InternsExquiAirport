@@ -21,7 +21,7 @@ table 80522 "Flight Schedule"
             NotBlank = true;
         }
 
-        field(3; "Callout ID"; Code[20])
+        field(3; "Callout ID"; Code[4])
         {
             TableRelation = "Aircraft Callout"."User Callout Code" where("Airline No." = field("Airline No."));
         }
@@ -38,7 +38,7 @@ table 80522 "Flight Schedule"
             ObsoleteTag = 'v1.4.0';
 
         }
-        field(6; "Runway ID"; Code[10])
+        field(6; "Runway ID"; Code[10])//TODO FIX THIS !!! 
         {
             Caption = 'Runway ID';
             TableRelation =
@@ -51,24 +51,32 @@ table 80522 "Flight Schedule"
                 AircraftCallout: Record "Aircraft Callout";
                 Aircraft: Record Aircraft;
                 Runway: Record Runway;
+                airportCode: Code[10];
             begin
                 if "Callout ID" = '' then
                     Error('Please select an aircraft callout before assigning a runway.');
                 //make sure that the callout chosen exists
-                if not AircraftCallout.Get("Callout ID") then
+                if not AircraftCallout.Get("Airline No.", "Callout ID") then
                     Error('Callout not found.');
                 //check in the callout list for the reg no of the aircraft
                 if not Aircraft.Get(AircraftCallout."Aircraft Reg No.") then
                     Error('Related aircraft not found.');
                 //check if runway exists
-                if not Runway.Get("Runway ID") then
+                // Pick correct airport based on flight type
+                if "Flight Type" = "Flight Type"::Arrival then
+                    airportCode := "To Airport Code"
+                else
+                    airportCode := "From Airport Code";
+
+                if airportCode = '' then
+                    Error('Select the airport before choosing a runway.');
+
+                if not Runway.Get(airportCode, "Runway ID") then
                     Error('Runway not found.');
-                //compare the runway and aircraft width
+         
                 if Aircraft."Aircraft Width (m)" >= Runway."Width (m)" then
                     Error(
-                        'Aircraft width must be less than runway width.',
-                        Aircraft."Aircraft Width (m)",
-                        Runway."Width (m)"
+                        'Aircraft width (%1 ) must be less than runway width (%2 ).'
                     );
                 begin
                     if "Callout ID" = '' then
@@ -80,7 +88,7 @@ table 80522 "Flight Schedule"
                     if not Aircraft.Get(AircraftCallout."Aircraft Reg No.") then
                         Error('Related aircraft not found.');
 
-                    if not Runway.Get("Runway ID") then
+                    if not Runway.Get(airportCode, "Runway ID") then
                         Error('Runway not found.');
 
                     case "Flight Type" of
@@ -178,6 +186,7 @@ table 80522 "Flight Schedule"
         key(ArrivalsByAirport; "Flight Type", "To Airport Code", "Scheduled Date") { }
         key(DeparturesByAirport; "Flight Type", "From Airport Code", "Scheduled Date") { }
     }
+
 
     trigger OnInsert()
     begin

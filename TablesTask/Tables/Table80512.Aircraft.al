@@ -99,13 +99,30 @@ table 80512 "Aircraft"
         field(11; "Aircraft Length (m)"; Integer)
         {
             Caption = 'Length (m)';
-            MinValue = 0; 
+            MinValue = 0;
         }
         field(12; "Aircraft Width (m)"; Integer)
         {
             Caption = 'Width (m)';
             MinValue = 0;
         }
+
+        field(14; "Maintenance Date Filter"; Date)
+        {
+            Caption = 'Maintenance Date Filter';
+            FieldClass = FlowFilter;
+        }
+
+        field(15; "Maintenance Cost by Date"; Decimal)
+        {
+            Caption = 'Maintenance Cost by Date';
+            FieldClass = FlowField;
+            CalcFormula = sum("Aircaft Maintenance"."Total Cost"
+                              where("Aircraft Registration No." = field("Registration No."),
+                                    "End Date" = field("Maintenance Date Filter")));
+            Editable = false;
+        }
+
     }
 
     keys
@@ -118,5 +135,7 @@ table 80512 "Aircraft"
     fieldgroups
     {
         fieldgroup(DropDown; "Registration No.", "Model", "Manufacturer", "Type", "Airline No.") { }
+        fieldgroup(Filter; "Maintenance Date Filter") { }
+
     }
 }

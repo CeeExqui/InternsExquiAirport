@@ -99,6 +99,7 @@ table 80514 "Aircaft Maintenance"
             Editable = false; // computed automatically based on user input
             DataClassification = CustomerContent;
         }
+
         field(11; "Employee ID"; Code[20])
         {
             Caption = 'Employee (Worked On)';
@@ -115,7 +116,6 @@ table 80514 "Aircaft Maintenance"
             CalcFormula = lookup("Employee"."First Name" where("No." = field("Employee ID")));
             Editable = false;
         }
-
 
     }
     keys

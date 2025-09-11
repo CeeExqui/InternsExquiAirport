@@ -34,7 +34,7 @@ table 80524 "Aircraft Callout"
             TableRelation = Aircraft."Registration No.";
         }
 
-        field(4; "User Callout Code"; Code[20])
+        field(4; "User Callout Code"; Code[4])
         {
             Caption = 'User Callout Code';
             NotBlank = true;
@@ -72,6 +72,6 @@ table 80524 "Aircraft Callout"
             "Callout ID" := NewId
         else
             if "Callout ID" <> NewId then
-                Rename(NewId); 
+                Rename(NewId);
     end;
 }

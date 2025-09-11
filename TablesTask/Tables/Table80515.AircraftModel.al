@@ -11,6 +11,7 @@ table 80513 "Aircraft Model"
             NotBlank = true;
             DataClassification = CustomerContent;
         }
+        
         field(2; "Description"; Text[100])
         {
             Caption = 'Description';

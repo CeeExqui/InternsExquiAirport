@@ -17,6 +17,7 @@ page 80513 "Aircraft Card"
                 {
                     ApplicationArea = All;
                     Editable = bool;
+
                 }
                 field(Manufacturer; Rec.Manufacturer)
                 {

@@ -3,8 +3,8 @@ page 80511 "Airport Card"
     Caption = 'Airport';
     PageType = Card;
     SourceTable = "Airport";
-    ApplicationArea = All;
     UsageCategory = Tasks;
+    ApplicationArea = All;
 
     layout
     {

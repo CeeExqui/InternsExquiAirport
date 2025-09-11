@@ -27,6 +27,15 @@ tableextension 80545 "G/L ACCOUNT EXTENSION" extends "G/L Account"
         field(80547; "Source No. Filter"; Code[20])
         {
             Caption = 'Source No. Filter';
+            TableRelation = if ("Source Type Filter" = const(Customer)) Customer
+            else
+            if ("Source Type Filter" = const(Vendor)) Vendor
+            else
+            if ("Source Type Filter" = const("Bank Account")) "Bank Account"
+            else
+            if ("Source Type Filter" = const("Fixed Asset")) "Fixed Asset"
+            else
+            if ("Source Type Filter" = const(Employee)) Employee;
             FieldClass = FlowFilter;
         }
     }

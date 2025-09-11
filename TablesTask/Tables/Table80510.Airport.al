@@ -7,7 +7,7 @@ table 80510 "Airport"
     DataPerCompany = true;
 
     // Display Code and Name in lookups and titles
-    DataCaptionFields = "No.", Name;
+    DataCaptionFields = "No.", "Operating Status";
 
     // For Page Creation
     LookupPageId = "Airport List";
