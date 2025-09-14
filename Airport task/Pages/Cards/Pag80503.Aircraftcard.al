@@ -1,10 +1,9 @@
-page 80503 "Air Craft Card"
+page 80503 "Aircraft card"
 {
     ApplicationArea = All;
-    Caption = 'Air Craft Card';
+    Caption = 'Aircraft card';
     PageType = Card;
     SourceTable = "Air Craft";
-    UsageCategory = Administration;
 
     layout
     {
@@ -34,13 +33,29 @@ page 80503 "Air Craft Card"
                 {
                     ToolTip = 'Specifies the value of the Cargo Unit of Measurement field.', Comment = '%';
                 }
+                field("Has Cargo?"; Rec."Has Cargo?")
+                {
+                    ToolTip = 'Specifies the value of the Has Cargo? field.', Comment = '%';
+                }
+                field("Has people?"; Rec."Has people?")
+                {
+                    ToolTip = 'Specifies the value of the Has people? field.', Comment = '%';
+                }
                 field("Last Maintenance Date"; Rec."Last Maintenance Date")
                 {
                     ToolTip = 'Specifies the value of the Last Maintenance Date field.', Comment = '%';
                 }
+                field(Length; Rec.Length)
+                {
+                    ToolTip = 'Specifies the value of the Length field.', Comment = '%';
+                }
                 field("Manufacturer Code"; Rec."Manufacturer Code")
                 {
                     ToolTip = 'Specifies the value of the Manufacturer Code field.', Comment = '%';
+                }
+                field("Manufacturer Name"; Rec."Manufacturer Name")
+                {
+                    ToolTip = 'Specifies the value of the Manufacturer Name field.', Comment = '%';
                 }
                 field(Model; Rec.Model)
                 {
@@ -50,13 +65,17 @@ page 80503 "Air Craft Card"
                 {
                     ToolTip = 'Specifies the value of the People Capacity field.', Comment = '%';
                 }
-                field("Resgistration Number"; Rec."Resgistration Number")
+                field("Registration Number"; Rec."Registration Number")
                 {
                     ToolTip = 'Specifies the value of the Resgistration Number field.', Comment = '%';
                 }
                 field("Total maintenance Cost"; Rec."Total maintenance Cost")
                 {
                     ToolTip = 'Specifies the value of the Total maintenance Cost field.', Comment = '%';
+                }
+                field(Width; Rec.Width)
+                {
+                    ToolTip = 'Specifies the value of the Width field.', Comment = '%';
                 }
             }
         }

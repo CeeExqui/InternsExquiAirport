@@ -1,18 +1,17 @@
-page 80506 "Flights Card"
+page 80515 "Completed Flights List"
 {
     ApplicationArea = All;
-    Caption = 'Flights Card';
-    PageType = Card;
-    SourceTable = Flights;
-    
+    Caption = 'Completed Flights List';
+    PageType = List;
+    SourceTable = "Completed Flights";
+    UsageCategory = Administration;
+
     layout
     {
         area(Content)
         {
-            group(General)
+            repeater(General)
             {
-                Caption = 'General';
-                
                 field("Air Craft Registration No."; Rec."Air Craft Registration No.")
                 {
                     ToolTip = 'Specifies the value of the Air Craft Registration No. field.', Comment = '%';
@@ -65,3 +64,4 @@ page 80506 "Flights Card"
         }
     }
 }
+

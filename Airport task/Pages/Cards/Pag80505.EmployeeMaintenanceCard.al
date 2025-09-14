@@ -5,7 +5,6 @@ page 80505 "Employee-Maintenance Card"
     PageType = Card;
     SourceTable = "Employee-Maintenance Mapping";
     UsageCategory = Administration;
-
     layout
     {
         area(Content)

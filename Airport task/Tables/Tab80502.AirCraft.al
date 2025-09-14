@@ -5,9 +5,9 @@ table 80502 "Air Craft"
     DrillDownPageId = "Aircraft Maintenance EntryCard";
     fields
     {
-        field(1; "Resgistration Number"; Code[6])
+        field(1; "Registration Number"; Code[6])
         {
-            Editable = false;
+            NotBlank = true;
             trigger OnValidate()
             begin
                 validateRegistration();
@@ -88,16 +88,17 @@ table 80502 "Air Craft"
 
             FieldClass = FlowField;
 
-            CalcFormula = sum("Aircraft Maintenance Entry"."Total Cost" where("Aircraft Registration No." = field("Resgistration Number")));
+            CalcFormula = sum("Aircraft Maintenance Entry"."Total Cost" where("Aircraft Registration No." = field("Registration Number")));
         }
         field(11; "Last Maintenance Date"; DateTime)
         {
             FieldClass = FlowField;
-            CalcFormula = Max("Aircraft Maintenance Entry"."Maintenance End Date" WHERE("Aircraft Registration No." = field("Resgistration Number")));
+            CalcFormula = Max("Aircraft Maintenance Entry"."Maintenance End Date" WHERE("Aircraft Registration No." = field("Registration Number")));
         }
         field(12; "Width"; Decimal)
         {
             MinValue = 0;
+
         }
         field(13; "Length"; Decimal)
         {
@@ -126,10 +127,22 @@ table 80502 "Air Craft"
             InitValue = '';
 
         }
+        field(17; "Date"; DateTime)
+        {
+            FieldClass = FlowFilter;
+
+        }
+        field(18; "New Total maintenance Cost"; Decimal)
+        {
+            FieldClass = FlowField;
+
+            CalcFormula = sum("Aircraft Maintenance Entry"."Total Cost" where("Aircraft Registration No." = field("Registration Number"),
+                                                                                "Maintenance Start Date" = field("Date")));
+        }
     }
     keys
     {
-        key(PK; "Resgistration Number")
+        key(PK; "Registration Number")
         {
             Clustered = true;
         }
@@ -188,8 +201,11 @@ table 80502 "Air Craft"
 
     local procedure validateRegistration()
     begin
-        if (Rec."Resgistration Number" = ('')) then
-            Error('Please enter a value');
+        if (xRec."Registration Number" <> '') then
+            if (Rec."Registration Number" <> xRec."Registration Number") then
+                Rec."Registration Number" := XRec."Registration Number";
+
+
     end;
 
 }

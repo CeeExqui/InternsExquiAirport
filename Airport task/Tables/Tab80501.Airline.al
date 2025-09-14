@@ -26,13 +26,19 @@ table 80501 Airline
         }
         field(3; "Contact Name"; Text[100])
         {
-            TableRelation = Contact.Name;
-
+            CalcFormula = lookup(Contact.Name where("No." = field("Contact No.")));
+            fieldClass = Flowfield;
+            Editable = false;
+            
 
         }
         field(4; "Phone Number"; Text[30])
         {
-            TableRelation = Contact."Phone No.";
+            CalcFormula = lookup(Contact."Phone No." where("No." = field("Contact No.")));
+
+            fieldClass = Flowfield;
+            Editable = false;
+
         }
         field(5; "Total Ammount of Aircraft"; Integer)
         {
@@ -45,6 +51,16 @@ table 80501 Airline
         {
             Editable = false;
         }
+
+        field(7; "Contact No."; Code[20])
+        {
+            TableRelation = Contact."No.";
+            trigger OnValidate()
+            begin
+                CalcFields("Phone number", "Contact Name");
+            end;
+        }
+
     }
     keys
     {

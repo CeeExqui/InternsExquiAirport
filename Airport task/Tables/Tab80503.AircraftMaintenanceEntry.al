@@ -13,7 +13,7 @@ table 80503 "Aircraft Maintenance Entry" //TODO add maintenance-employee
         }
         field(2; "Aircraft Registration No."; Code[6])
         {
-            TableRelation = "Air Craft"."Resgistration Number";
+            TableRelation = "Air Craft"."Registration Number";
             NotBlank = true;
         }
         field(3; "Maintenance Start Date"; DateTime)

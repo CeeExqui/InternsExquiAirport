@@ -1,8 +1,8 @@
-page 80500 "Airline Card"
+page 80508 "Airline List"
 {
     ApplicationArea = All;
-    Caption = 'Airline Card';
-    PageType = Card;
+    Caption = 'Airline List';
+    PageType = List;
     SourceTable = Airline;
     UsageCategory = Administration;
 
@@ -10,21 +10,28 @@ page 80500 "Airline Card"
     {
         area(Content)
         {
-            group(General)
+            repeater(General)
             {
-                Caption = 'General';
 
-                field("No."; Rec."No.")
+                field(Callout; Rec.Callout)
                 {
-                    ToolTip = 'Specifies the value of the No. field.', Comment = '%';
+                    ToolTip = 'Specifies the value of the Callout field.', Comment = '%';
+                }
+                field("Contact Name"; Rec."Contact Name")
+                {
+                    ToolTip = 'Specifies the value of the Contact field.', Comment = '%';
+                }
+                field("Contact No."; Rec."Contact No.")
+                {
+                    ToolTip = 'Specifies the value of the Contact No. field.', Comment = '%';
                 }
                 field(Name; Rec.Name)
                 {
                     ToolTip = 'Specifies the value of the Name field.', Comment = '%';
                 }
-                field("Contact Name"; Rec."Contact Name")
+                field("No."; Rec."No.")
                 {
-                    ToolTip = 'Specifies the value of the Contact field.', Comment = '%';
+                    ToolTip = 'Specifies the value of the No. field.', Comment = '%';
                 }
                 field("Phone Number"; Rec."Phone Number")
                 {
@@ -34,7 +41,6 @@ page 80500 "Airline Card"
                 {
                     ToolTip = 'Specifies the value of the Inventory field.', Comment = '%';
                 }
-
             }
         }
     }

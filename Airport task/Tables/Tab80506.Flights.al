@@ -23,7 +23,7 @@ table 80506 Flights
         }
         field(3; "Air Craft Registration No."; Code[6])
         {
-            TableRelation = "Air Craft"."Resgistration Number";
+            TableRelation = "Air Craft"."Registration Number";
             NotBlank = true;
 
         }
@@ -59,13 +59,14 @@ table 80506 Flights
                 validateFlightArrival();
             end;
         }
-        Field(7; "From Airport"; Text[50])
+        Field(7; "From Airport"; Code[3])
         {
             TableRelation = "Airport"."No.";
+
             trigger OnValidate()
             begin
                 ValidateAirport();
-                validateStartRunway();
+                // validateStartAirport();
             end;
         }
         field(8; "To Airport"; Text[50])
@@ -75,17 +76,18 @@ table 80506 Flights
             trigger OnValidate()
             begin
                 validateAirport();
-                validateEndRunway();
+                validateEndAirport();
             end;
         }
         field(9; "Start Runway Name"; Code[50]) //TODO make it that runway HAS to belong to an airport
         {
-            TableRelation = if ("From Airport" = const('')) "RunWay"."Runway Name"
-            else if ("From Airport" = filter(<> '')) "RunWay"."Runway Name" WHERE("Airport No." = field("From Airport"));
+            TableRelation = if ("From Airport" = filter(<> '')) "RunWay"."Runway Name" WHERE("Airport No." = field("From Airport"));
             NotBlank = true;
+
             trigger OnValidate()
             begin
                 RunwayLimit(Rec."Start Runway Name");
+                validateRunway("Start Runway Name");
 
             end;
 
@@ -95,15 +97,14 @@ table 80506 Flights
 
         field(10; "Destination Runway Name"; Code[50])
         {
-            TableRelation = if ("To Airport" = const('')) "RunWay"."Runway Name"
-            else if ("To Airport" = filter(<> '')) "RunWay"."Runway Name" WHERE("Airport No." = field("To Airport"));
+            TableRelation = if ("To Airport" = filter(<> '')) "RunWay"."Runway Name" WHERE("Airport No." = field("To Airport"));
             NotBlank = true;
 
             trigger OnValidate()
             var
 
             begin
-
+                validateRunway(Rec."Destination Runway Name");
                 RunwayLimit(Rec."Destination Runway Name");
             end;
         }
@@ -111,7 +112,7 @@ table 80506 Flights
         {
             OptionMembers = " ",Arriving,Landing;
 
-
+            ValuesAllowed = 1, 2;
         }
         field(12; "Is Completed ?"; Boolean)
         {
@@ -139,7 +140,7 @@ table 80506 Flights
         Runway: Record "RunWay";
         Aircraft: Record "Air Craft";
     begin
-        if (Runway.get(RunwayName) and Aircraft.get("Air Craft Registration No.")) then
+        if (Runway.get(RunwayName) and Aircraft.get(Rec."Air Craft Registration No.")) then
             if (Aircraft.Width > Runway.Width) then
                 Error('Aircraft too wide for the runway.')
 
@@ -153,7 +154,8 @@ table 80506 Flights
         callout: Record Airline;
     begin
         if (callout.get("Airline No.")) then
-            if (callout.Callout <> CopyStr(Rec."Full Callout", 1, 2)) then Error('Invalid callout prefix');
+            if (Rec."Full Callout" <> '') then
+                if (callout.Callout <> CopyStr(Rec."Full Callout", 1, 2)) then Error('Invalid callout prefix');
 
     end;
 
@@ -161,12 +163,11 @@ table 80506 Flights
 
     local procedure move() //TODO find another way
     var
-        from: Record "Flights";
         destination: Record "Completed Flights";
     begin
 
         destination.Init();
-        destination.TransferFields(from);
+        destination.TransferFields(Rec);
         destination.Insert(True);
 
     end;
@@ -196,21 +197,38 @@ table 80506 Flights
 
     end;
 
-    local procedure validateStartRunway()
+    // local procedure validateStartAirport()
 
+    // begin
+    //     checkStatus();
+    //     case Rec.Status of
+    //         1:
+
+    //     end;
+
+    //     end;
+
+    local procedure validateEndAirport()
     begin
-        Runway.get("Start Runway Name");
-        if (Runway."Airport No." <> Rec."From Airport") then
-            Clear(Rec."Start Runway Name");
+        checkStatus();
+        if (Rec.Status = 2) then
+            if ("From Airport" = '') then
+                Error('Please select a landing airport.')
     end;
 
-    local procedure validateEndRunway()
+    local procedure checkStatus()
     begin
-        Runway.get("Destination Runway Name");
-        if (Runway."Airport No." <> Rec."to Airport") then
-            Clear(Rec."Destination Runway Name");
+        if (Rec.Status = 0) then Error('Please select the status of the flight');
+
     end;
+
+
+    local procedure validateRunway(RunwayName: Code[50])
+    Var
+        Runway: Record RunWay;
+    begin
+
+    end;
+
 }
-
-
 //TODO for later look into Record.SetFilter()
