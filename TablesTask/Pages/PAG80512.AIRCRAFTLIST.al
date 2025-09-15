@@ -16,7 +16,6 @@ page 80512 "Aircraft List"
                 field("Registration No."; Rec."Registration No.")
                 {
                     ApplicationArea = All;
-
                 }
                 field(Manufacturer; Rec.Manufacturer)
                 {
@@ -63,14 +62,14 @@ page 80512 "Aircraft List"
                     ApplicationArea = All;
                 }
                 field("Maintenance Date Filter"; Rec."Maintenance Date Filter")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Set a date or range (e.g. 01/12/25..31/12/25) to filter maintenance cost by date.';
-            }
-            field("Maintenance Cost by Date"; Rec."Maintenance Cost by Date")
-            {
-                ApplicationArea = All;
-            }
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Set a date or range (e.g. 01/12/25..31/12/25) to filter maintenance cost by date.';
+                }
+                field("Maintenance Cost by Date"; Rec."Maintenance Cost by Date")
+                {
+                    ApplicationArea = All;
+                }
             }
 
         }
@@ -90,6 +89,7 @@ page 80512 "Aircraft List"
                 RunPageMode = View;
                 RunObject = Page "Aircraft Maintenance List";
                 RunPageLink = "Aircraft Registration No." = field("Registration No.");
+                
             }
         }
 
@@ -101,8 +101,6 @@ page 80512 "Aircraft List"
         Maintenance.SetRange("Aircraft Registration No.", Rec."Registration No.");
         if not Maintenance.IsEmpty() then
             Error('You cannot delete this aircraft because it has related maintenance records.');
-            
-
         exit(true);
     end;
 }

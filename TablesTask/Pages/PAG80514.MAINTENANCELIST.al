@@ -1,4 +1,4 @@
-page 80514 "Aircraft Maintenance List"
+﻿page 80514 "Aircraft Maintenance List"
 {
     PageType = List;
     SourceTable = "Aircaft Maintenance";
@@ -26,5 +26,27 @@ page 80514 "Aircraft Maintenance List"
         }
     }
 
+    actions
+    {
+        area(processing)
+        {
+            action("Labor Costs")
+            {
+                ApplicationArea = All;
+                Caption = 'Labor Cost';
+                Image = CalculateCost;
+                ToolTip = 'Adjust the labor cost for this maintenance record';
+                Promoted = true;
+                PromotedCategory = Process;
 
+                trigger OnAction()
+                begin
+                    if Rec."Entry No." = 0 then
+                        Error('Please select a maintenance record first.');
+
+                    Page.RunModal(Page::"Labor Cost Adjustment", Rec);
+                end;
+            }
+        }
+    }
 }
