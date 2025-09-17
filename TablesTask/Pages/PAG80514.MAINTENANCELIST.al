@@ -47,6 +47,24 @@
                     Page.RunModal(Page::"Labor Cost Adjustment", Rec);
                 end;
             }
+            action(AircraftReport)
+            {
+                ApplicationArea = All;
+                Caption = 'Aircraft Report';
+                Image = Print;
+                Promoted = true;
+                PromotedCategory = Report;
+
+                trigger OnAction()
+                var
+                    Header: Record "Aircaft Maintenance";
+                begin
+                    Header.SetRange("Aircraft Registration No.", Rec."Aircraft Registration No.");
+                    Report.RunModal(Report::"Aircraft Report", true, false, Header);
+                end;
+            }
         }
+
+
     }
 }
