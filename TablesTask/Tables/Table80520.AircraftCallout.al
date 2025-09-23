@@ -38,7 +38,6 @@ table 80524 "Aircraft Callout"
         {
             Caption = 'User Callout Code';
             NotBlank = true;
-
             trigger OnValidate()
             begin
                 UpdateCalloutId();

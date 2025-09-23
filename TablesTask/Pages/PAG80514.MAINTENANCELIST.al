@@ -62,6 +62,8 @@
                     Header.SetRange("Aircraft Registration No.", Rec."Aircraft Registration No.");
                     Report.RunModal(Report::"Aircraft Report", true, false, Header);
                 end;
+
+
             }
         }
 

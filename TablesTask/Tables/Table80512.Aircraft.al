@@ -17,7 +17,7 @@ table 80512 "Aircraft"
             Caption = 'Manufacturer';
             TableRelation = Manufacturer.Code;
             DataClassification = CustomerContent;
-
+            
             trigger OnValidate()
             var
                 test: Record Manufacturer;
@@ -66,6 +66,7 @@ table 80512 "Aircraft"
         {
             Caption = 'Type';
             DataClassification = CustomerContent;
+            
             trigger OnValidate()
             begin
                 if ("Type" <> "Type"::Passenger) then

@@ -118,6 +118,7 @@ table 80514 "Aircaft Maintenance"
         }
 
     }
+    
     keys
     {
         key(PK; "Entry No.") { Clustered = true; }
