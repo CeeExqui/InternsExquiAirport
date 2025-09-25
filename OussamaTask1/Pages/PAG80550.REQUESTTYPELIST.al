@@ -5,6 +5,7 @@ page 80550 "Request Type List"
     ApplicationArea = All;
     Caption = 'Request Types';
     UsageCategory = Tasks;
+    Editable = false;
 
     layout
     {
@@ -51,8 +52,11 @@ page 80550 "Request Type List"
                     Page.Run(Page::"My Document", NewHeader);
                 end;
             }
+
         }
     }
+
+
     local procedure EvaluateInt(Value: Text): Integer
     var
         Result: Integer;
@@ -61,6 +65,8 @@ page 80550 "Request Type List"
             Result := 0;
         exit(Result);
     end;
+
+    
 
 }
 

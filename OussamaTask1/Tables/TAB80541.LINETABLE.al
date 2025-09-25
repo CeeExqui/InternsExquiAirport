@@ -49,6 +49,7 @@ table 80541 "Document Line"
     trigger OnInsert()
     var
         Header: Record "Document Header";
+        DimMgt: Codeunit DimensionManagement;
     begin
         if Header.Get("Document No.") then
             Header.UpdateTotals();

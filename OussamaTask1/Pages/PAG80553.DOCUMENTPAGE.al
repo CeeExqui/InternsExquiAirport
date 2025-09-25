@@ -18,11 +18,13 @@ page 80553 "My Document"
                 field("Total Amount"; Rec."Total Amount") { }
             }
 
+
             part(Lines; "Line List")
             {
                 SubPageLink = "Document No." = field("No.");
             }
         }
+
 
         area(factboxes)
         {
@@ -80,6 +82,38 @@ page 80553 "My Document"
             }
 
         }
+        area(Navigation)
+        {
+            group(DimensionsGroup)
+            {
+                Caption = 'Dimensions';
+                Image = Dimensions;
+
+                action(Dimensions)
+                {
+                    Caption = 'Dimensions';
+                    Image = Dimensions;
+                    ApplicationArea = All;
+
+                    trigger OnAction()
+                    var
+                        DimMgt: Codeunit DimensionManagement;
+                        OldDimSetID: Integer;
+                    begin
+                        OldDimSetID := Rec."Dimension Set ID";
+
+                        Rec."Dimension Set ID" :=
+                          DimMgt.EditDimensionSet(Rec."Dimension Set ID", Rec."No.");
+
+                        if Rec."Dimension Set ID" <> OldDimSetID then begin
+                            Rec.Modify(true);
+                            Rec.UpdateAllLineDim(Rec."Dimension Set ID", OldDimSetID); 
+                        end;
+                    end;
+                }
+            }
+        }
+
 
     }
 }

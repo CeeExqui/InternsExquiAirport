@@ -2,6 +2,8 @@ table 80563 "Posted Request Header"
 {
     Caption = 'Posted Request Header';
     DataClassification = ToBeClassified;
+    LookupPageId = "Posted Request Document";
+
 
     fields
     {
