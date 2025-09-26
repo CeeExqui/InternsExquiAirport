@@ -12,6 +12,7 @@ table 80505 "Employee-Maintenance Mapping"
         field(2; "Maintenance Entry No."; Code[20])
         {
             TableRelation = "Aircraft Maintenance Entry"."Entry No.";
+
         }
     }
     keys

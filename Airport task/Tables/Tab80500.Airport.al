@@ -18,6 +18,8 @@ table 80500 Airport
         }
         field(2; Name; Text[50])
         {
+
+
         }
 
         field(3; "Post Code"; Code[20])
@@ -52,5 +54,6 @@ table 80500 Airport
 
 
     }
+
 
 }

@@ -18,7 +18,7 @@ pageextension 80501 "Customer Extension" extends "Customer List"
     var
         myInt: Integer;
     begin
-        message('hello, this is a on after');
+        // message('hello, this is a on after');
     end;
 
 }

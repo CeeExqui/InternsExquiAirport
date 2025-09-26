@@ -41,7 +41,7 @@ table 80502 "Air Craft"
         field(5; "Model"; Text[100])
         {
 
-            TableRelation = if ("Manufacturer Code" = filter(<> '')) "Manufacturer".Model where(Code = field("Manufacturer Code"));
+            TableRelation = if ("Manufacturer Code" = filter(<> '')) Model."Model Name" where("Manufacturer Name" = field("Manufacturer Code"));
             trigger OnValidate()
             begin
                 ValidModel()
@@ -139,6 +139,43 @@ table 80502 "Air Craft"
             CalcFormula = sum("Aircraft Maintenance Entry"."Total Cost" where("Aircraft Registration No." = field("Registration Number"),
                                                                                 "Maintenance Start Date" = field("Date")));
         }
+
+
+        field(19; "Dimension Set ID"; Integer)
+        {
+            Editable = false;
+
+        }
+        field(20; "Lines Count"; Integer)
+        {
+            FieldClass = FlowField;
+            CalcFormula = count("Aircraft Maintenance Entry" where("Aircraft Registration No." = field("Registration Number")));
+        }
+
+        field(21; "Shortcut Dimension 1 Code"; Code[20])
+        {
+            CaptionClass = '1,2,1';
+            Caption = 'Shortcut Dimension 1 Code';
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(1),
+                                                          Blocked = const(false));
+
+            trigger OnValidate()
+            begin
+                Rec.ValidateShortcutDimCode(1, "Shortcut Dimension 1 Code");
+            end;
+        }
+        field(22; "Shortcut Dimension 2 Code"; Code[20])
+        {
+            CaptionClass = '1,2,2';
+            Caption = 'Shortcut Dimension 2 Code';
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(2),
+                                                          Blocked = const(false));
+
+            trigger OnValidate()
+            begin
+                Rec.ValidateShortcutDimCode(2, "Shortcut Dimension 2 Code");
+            end;
+        }
     }
     keys
     {
@@ -151,6 +188,13 @@ table 80502 "Air Craft"
 
     var
         Manufacturer: Record Manufacturer;
+        DimMgt: Codeunit DimensionManagement;
+        HideValidationDialog: Boolean;
+        Text064: Label 'You may have changed a dimension.\\Do you want to update the lines?';
+
+        SalesHeader: Record "Air Craft";
+        SalesLine: Record "Aircraft Maintenance Entry";
+
 
     local procedure validManufacturerNo()
     begin
@@ -163,13 +207,15 @@ table 80502 "Air Craft"
     end;
 
     local procedure validModel()
+    var
+        Model: Record Model;
     begin
-        if (Rec."Manufacturer Code" <> '') then begin
-            if (Manufacturer.get(Rec."Manufacturer Code")) then
-                if (Manufacturer.Model <> Rec."Model") then Error('Model do not belong to the manufacturer.')
+        if (Rec."Manufacturer Name" <> '') then begin //it only runs if Manufacturer Name is set
+            if (Model.get(Rec."Model")) then
+                if (Model."Manufacturer Name" <> Rec."Manufacturer Name") then Error('Model do not belong to the manufacturer.')
         end
         else
-            Error('Invalid Manufacturer Code');
+            Error('Invalid Model');
 
 
     end;
@@ -207,5 +253,214 @@ table 80502 "Air Craft"
 
 
     end;
+
+    procedure ShowDocDim()
+    var
+        OldDimSetID: Integer;
+        IsHandled: Boolean;
+    begin
+        IsHandled := false;
+        // OnBeforeShowDocDim(Rec, xRec, IsHandled);
+        if IsHandled then
+            exit;
+
+        OldDimSetID := "Dimension Set ID";
+        "Dimension Set ID" :=
+          DimMgt.EditDimensionSet(
+            Rec, "Dimension Set ID", StrSubstNo('%1', "Registration Number"),
+            "Shortcut Dimension 1 Code", "Shortcut Dimension 2 Code");
+        // OnShowDocDimOnBeforeUpdateSalesLines(Rec, xRec);
+        if OldDimSetID <> "Dimension Set ID" then begin
+            // OnShowDocDimOnBeforeSalesHeaderModify(Rec);
+            Modify();
+            if SalesLinesExist() then
+                UpdateAllLineDim("Dimension Set ID", OldDimSetID);
+        end;
+    end;
+
+
+    procedure SalesLinesExist(): Boolean
+    var
+        IsHandled: Boolean;
+        Result: Boolean;
+    begin
+        IsHandled := false;
+        //OnBeforeSalesLinesExist(Rec, IsHandled, Result);
+        if IsHandled then
+            exit(Result);
+
+        SalesLine.Reset();
+        SalesLine.SetRange("Aircraft Registration No.", "Registration Number");
+        exit(not SalesLine.IsEmpty());
+    end;
+
+
+
+    procedure UpdateAllLineDim(NewParentDimSetID: Integer; OldParentDimSetID: Integer)
+    var
+        ATOLink: Record "Assemble-to-Order Link";
+        xSalesLine: Record "Aircraft Maintenance Entry";
+        NewDimSetID: Integer;
+        ShippedReceivedItemLineDimChangeConfirmed: Boolean;
+        IsHandled: Boolean;
+    begin
+        IsHandled := false;
+        // OnBeforeUpdateAllLineDim(Rec, NewParentDimSetID, OldParentDimSetID, IsHandled, xRec);
+        if IsHandled then
+            exit;
+
+        if NewParentDimSetID = OldParentDimSetID then
+            exit;
+        if not GetHideValidationDialog() and GuiAllowed then
+            if not ConfirmUpdateAllLineDim(NewParentDimSetID, OldParentDimSetID) then
+                exit;
+
+        SalesLine.Reset();
+        SalesLine.SetRange("Aircraft Registration No.", "Registration Number");
+        SalesLine.LockTable();
+        if SalesLine.Find('-') then
+            repeat
+                // OnUpdateAllLineDimOnBeforeGetSalesLineNewDimsetID(SalesLine, NewParentDimSetID, OldParentDimSetID);
+                NewDimSetID := DimMgt.GetDeltaDimSetID(SalesLine."Dimension Set ID", NewParentDimSetID, OldParentDimSetID);
+                // OnUpdateAllLineDimOnAfterGetSalesLineNewDimsetID(Rec, xRec, SalesLine, NewDimSetID, NewParentDimSetID, OldParentDimSetID);
+                if SalesLine."Dimension Set ID" <> NewDimSetID then begin
+                    xSalesLine := SalesLine;
+                    SalesLine."Dimension Set ID" := NewDimSetID;
+
+                    // if not GetHideValidationDialog() and GuiAllowed then
+                    //     VerifyShippedReceivedItemLineDimChange(ShippedReceivedItemLineDimChangeConfirmed);
+
+                    DimMgt.UpdateGlobalDimFromDimSetID(
+                      SalesLine."Dimension Set ID", SalesLine."Shortcut Dimension 1 Code", SalesLine."Shortcut Dimension 2 Code");
+
+                    // OnUpdateAllLineDimOnBeforeSalesLineModify(SalesLine, xSalesLine);
+                    SalesLine.Modify();
+                    // OnUpdateAllLineDimOnAfterSalesLineModify(SalesLine);
+                end;
+            until SalesLine.Next() = 0;
+
+    end;
+
+
+    local procedure ConfirmUpdateAllLineDim(NewParentDimSetID: Integer; OldParentDimSetID: Integer) Confirmed: Boolean;
+    var
+        IsHandled: Boolean;
+    begin
+        IsHandled := false;
+        // OnBeforeConfirmUpdateAllLineDim(Rec, xRec, NewParentDimSetID, OldParentDimSetID, Confirmed, IsHandled);
+        if not IsHandled then
+            Confirmed := Confirm(Text064);
+    end;
+
+
+
+
+    // local procedure VerifyShippedReceivedItemLineDimChange(var ShippedReceivedItemLineDimChangeConfirmed: Boolean)
+    // begin
+    //     if SalesLine.IsShippedReceivedItemDimChanged() then
+    //         if not ShippedReceivedItemLineDimChangeConfirmed then
+    //             ShippedReceivedItemLineDimChangeConfirmed := SalesLine.ConfirmShippedReceivedItemDimChange();
+    // end;
+
+
+
+    procedure ValidateShortcutDimCode(FieldNumber: Integer; var ShortcutDimCode: Code[20])
+    var
+        OldDimSetID: Integer;
+        IsHandled: Boolean;
+    begin
+        IsHandled := false;
+        // OnBeforeValidateShortcutDimCode(Rec, xRec, FieldNumber, ShortcutDimCode, IsHandled);
+        if IsHandled then
+            exit;
+
+        OldDimSetID := "Dimension Set ID";
+        DimMgt.ValidateShortcutDimValues(FieldNumber, ShortcutDimCode, "Dimension Set ID");
+        if "Registration Number" <> '' then
+            Modify();
+
+        if OldDimSetID <> "Dimension Set ID" then begin
+            // OnValidateShortcutDimCodeOnBeforeUpdateAllLineDim(Rec, xRec, FieldNumber);
+            if not IsNullGuid(Rec.SystemId) then
+                Modify();
+            if SalesLinesExist() then
+                UpdateAllLineDim("Dimension Set ID", OldDimSetID);
+        end;
+
+        // OnAfterValidateShortcutDimCode(Rec, xRec, FieldNumber, ShortcutDimCode);
+    end;
+
+    procedure GetHideValidationDialog(): Boolean
+    begin
+        exit(HideValidationDialog);
+    end;
+
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnBeforeShowDocDim(var SalesHeader: Record "Air Craft"; xSalesHeader: Record "Air Craft"; var IsHandled: Boolean)
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnShowDocDimOnBeforeUpdateSalesLines(var SalesHeader: Record "Air Craft"; xSalesHeader: Record "Air Craft")
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnShowDocDimOnBeforeSalesHeaderModify(var SalesHeader: Record "Air Craft")
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnBeforeSalesLinesExist(var SalesHeader: Record "Air Craft"; var IsHandled: Boolean; var Result: Boolean)
+    // begin
+    // end;
+
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnBeforeUpdateAllLineDim(var SalesHeader: Record "Air Craft"; NewParentDimSetID: Integer; OldParentDimSetID: Integer; var IsHandled: Boolean; xSalesHeader: Record "Air Craft")
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnBeforeConfirmUpdateAllLineDim(var SalesHeader: Record "Air Craft"; var xSalesHeader: Record "Air Craft"; NewParentDimSetID: Integer; OldParentDimSetID: Integer; var Confirmed: Boolean; var IsHandled: Boolean)
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnUpdateAllLineDimOnBeforeGetSalesLineNewDimSetID(var SalesLine: Record "Aircraft Maintenance Entry"; NewParentDimSetID: Integer; OldParentDimSetID: Integer)
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnUpdateAllLineDimOnAfterGetSalesLineNewDimsetID(SalesHeader: Record "Air Craft"; xSalesHeader: Record "Air Craft"; SalesLine: Record "Aircraft Maintenance Entry"; var NewDimSetID: Integer; NewParentDimSetID: Integer; OldParentDimSetID: Integer)
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnUpdateAllLineDimOnBeforeSalesLineModify(var SalesLine: Record "Aircraft Maintenance Entry"; xSalesLine: Record "Aircraft Maintenance Entry")
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnUpdateAllLineDimOnAfterSalesLineModify(var SalesLine: Record "Aircraft Maintenance Entry")
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnBeforeValidateShortcutDimCode(var SalesHeader: Record "Air Craft"; xSalesHeader: Record "Air Craft"; FieldNumber: Integer; var ShortcutDimCode: Code[20]; var IsHandled: Boolean)
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnValidateShortcutDimCodeOnBeforeUpdateAllLineDim(var SalesHeader: Record "Air Craft"; xSalesHeader: Record "Air Craft"; FieldNumber: Integer)
+    // begin
+    // end;
+
+    // [IntegrationEvent(false, false)]
+    // local procedure OnAfterValidateShortcutDimCode(var SalesHeader: Record "Air Craft"; xSalesHeader: Record "Air Craft"; FieldNumber: Integer; var ShortcutDimCode: Code[20])
+    // begin
+    // end;
+
 
 }

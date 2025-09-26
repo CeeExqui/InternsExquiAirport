@@ -4,7 +4,8 @@ page 80511 "Aircraft List"
     Caption = 'Aircraft List';
     PageType = List;
     SourceTable = "Air Craft";
-    UsageCategory = None;
+    UsageCategory = Administration;
+    CardPageId = "Aircraft card";
 
 
     layout
@@ -25,17 +26,10 @@ page 80511 "Aircraft List"
                 {
                     ToolTip = 'Specifies the value of the Aircraft Type field.', Comment = '%';
                 }
+
                 field("Airline No."; Rec."Airline No.")
                 {
                     ToolTip = 'Specifies the value of the Airline No. field.', Comment = '%';
-                }
-                field("Capacity Cargo"; Rec."Capacity Cargo")
-                {
-                    ToolTip = 'Specifies the value of the Capacity Cargo field.', Comment = '%';
-                }
-                field("Cargo Unit of Measurement"; Rec."Cargo Unit of Measurement")
-                {
-                    ToolTip = 'Specifies the value of the Cargo Unit of Measurement field.', Comment = '%';
                 }
                 field("Has Cargo?"; Rec."Has Cargo?")
                 {
@@ -45,6 +39,15 @@ page 80511 "Aircraft List"
                 {
                     ToolTip = 'Specifies the value of the Has people? field.', Comment = '%';
                 }
+                field("Capacity Cargo"; Rec."Capacity Cargo")
+                {
+                    ToolTip = 'Specifies the value of the Capacity Cargo field.', Comment = '%';
+                }
+                field("Cargo Unit of Measurement"; Rec."Cargo Unit of Measurement")
+                {
+                    ToolTip = 'Specifies the value of the Cargo Unit of Measurement field.', Comment = '%';
+                }
+
                 field("Last Maintenance Date"; Rec."Last Maintenance Date")
                 {
                     ToolTip = 'Specifies the value of the Last Maintenance Date field.', Comment = '%';
@@ -53,14 +56,15 @@ page 80511 "Aircraft List"
                 {
                     ToolTip = 'Specifies the value of the Length field.', Comment = '%';
                 }
-                field("Manufacturer Code"; Rec."Manufacturer Code")
-                {
-                    ToolTip = 'Specifies the value of the Manufacturer Code field.', Comment = '%';
-                }
                 field("Manufacturer Name"; Rec."Manufacturer Name")
                 {
                     ToolTip = 'Specifies the value of the Manufacturer Name field.', Comment = '%';
                 }
+                field("Manufacturer Code"; Rec."Manufacturer Code")
+                {
+                    ToolTip = 'Specifies the value of the Manufacturer Code field.', Comment = '%';
+                }
+
                 field(Model; Rec.Model)
                 {
                     ToolTip = 'Specifies the value of the Model field.', Comment = '%';
@@ -83,9 +87,12 @@ page 80511 "Aircraft List"
                     ToolTip = 'Specifies the value of the Total maintenance Cost field.', Comment = '%';
                 }
 
+
             }
         }
     }
+
+
     actions
     {
         area(navigation)
@@ -102,6 +109,21 @@ page 80511 "Aircraft List"
                     // RunPageOnRec =page "Aircraft Maintenance List";
                     RunPageMode = view;
                 }
+                action("Print Repair Report")
+                {
+
+                    ApplicationArea = All;
+                    Promoted = true;
+                    PromotedCategory = Process;
+
+                    trigger OnAction()
+                    var
+                        Maintenance: Record "Air Craft";
+                    begin
+                        Maintenance.SetFilter("Registration number", Rec."Registration number");
+                        Report.Run(report::"AirCraft Maintenance Report", true, false, Maintenance);
+                    end;
+                }
             }
         }
     }
@@ -113,7 +135,7 @@ page 80511 "Aircraft List"
         Maintenance.SetRange("Aircraft Registration No.", Rec."Registration Number");
         if not Maintenance.IsEmpty() then
             // if (Maintenance.find('=')) then
-            Error('Cannot delete a airline with a maintenance');
-        exit(true);
+            // Error('Cannot delete a airline with a maintenance');
+            exit(true);
     end;
 }
