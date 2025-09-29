@@ -32,7 +32,7 @@ page 80648 "Sales Lines Report"
         if Q.Open then begin
             while Q.Read() do begin
                 Clear(NewRec);
-                NewRec.EntryNo := Counter; 
+                NewRec.EntryNo := Counter;
                 NewRec.DocumentNo := Q.DocumentNo;
                 NewRec.ItemNo := Q.ItemNo;
                 NewRec.Quantity := Q.Quantity;
