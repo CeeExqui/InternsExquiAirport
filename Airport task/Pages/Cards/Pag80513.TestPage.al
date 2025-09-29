@@ -4,7 +4,8 @@ page 80513 "TestPage"
     Caption = 'TestPage';
     PageType = Card;
     SourceTable = "Error table";
-    
+    UsageCategory = Administration;
+
     layout
     {
         area(Content)
@@ -12,7 +13,7 @@ page 80513 "TestPage"
             group(General)
             {
                 Caption = 'General';
-                
+
                 field("Test 2"; Rec."Test 2")
                 {
                     ToolTip = 'Specifies the value of the Test 2 field.', Comment = '%';
@@ -24,4 +25,9 @@ page 80513 "TestPage"
             }
         }
     }
+
+    trigger OnOpenPage()
+    begin
+        message(WorkDate(Today).ToText());
+    end;
 }

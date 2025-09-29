@@ -156,7 +156,6 @@ table 80506 Flights
         if (callout.get("Airline No.")) then
             if (Rec."Full Callout" <> '') then
                 if (callout.Callout <> CopyStr(Rec."Full Callout", 1, 2)) then Error('Invalid callout prefix');
-
     end;
 
 
