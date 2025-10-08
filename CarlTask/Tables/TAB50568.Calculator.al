@@ -7,7 +7,7 @@ table 80568 "Date Calculator Table"
         field(2; "Operation"; Option)
         {
             Caption = 'Mathematical Operation';
-            OptionMembers = Addition,Substitution;
+            OptionMembers = Addition,Substraction;
         }
         field(3; "Days"; Integer) { }
         field(4; "Weeks"; Integer) { }

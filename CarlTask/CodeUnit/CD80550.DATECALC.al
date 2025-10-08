@@ -8,7 +8,7 @@ codeunit 80550 "Date CALC"
         case CalculateRec."Operation" of
             CalculateRec."Operation"::Addition:
                 Sign := '+';
-            CalculateRec."Operation"::Substitution:
+            CalculateRec."Operation"::Substraction:
                 Sign := '-';
         end;
 
