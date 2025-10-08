@@ -22,4 +22,5 @@ table 80505 "Employee-Maintenance Mapping"
             Clustered = true;
         }
     }
+
 }

@@ -48,4 +48,8 @@ page 80500 "Airline Card"
     }
     var
         try: Boolean;
+
+
+
+
 }

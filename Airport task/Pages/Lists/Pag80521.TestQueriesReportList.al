@@ -16,6 +16,7 @@ page 80521 "Test Queries Report List"
                 {
                     ToolTip = 'Specifies the value of the ID field.', Comment = '%';
                 }
+                field(Users; Rec.SystemCreatedBy) { }
 
             }
             group(footer)
@@ -106,6 +107,21 @@ page 80521 "Test Queries Report List"
                 end;
 
             }
+            Action("Hide Records(5s)")
+            {
+
+                Promoted = true;
+                PromotedCategory = process;
+                trigger OnAction()
+                var
+                    FlagCode: Codeunit "Feature Flag Testing";
+                    Tempref: RecordRef;
+                    MyGuid: Guid;
+                begin
+                    CurrPage.Update();
+                end;
+            }
+
 
 
         }
@@ -115,6 +131,8 @@ page 80521 "Test Queries Report List"
         Target: Integer;
         RepRDur: duration;
         RepQDur: duration;
+
+        UserRecord: Record "User";
 
     procedure setRepRDur(totalduration: duration)
     begin
@@ -145,6 +163,25 @@ page 80521 "Test Queries Report List"
         RepQ.RunModal();
 
     end;
+
+
+
+    //     trigger OnOpenPage()
+
+    //     var
+    //         FlagCode: Codeunit "Feature Flag Testing";
+    //         MyGuid: Guid;
+    //         Startdate: DateTime;
+    //         grp: Integer;
+    //     begin
+    //  Startdate := CurrentDateTime() - 999999999;
+
+
+    //         Rec.FilterGroup(2);
+    //         rec.setview := FlagCode.HideRecords(Startdate, CurrentDateTime(), UserSecurityId());
+    //         Rec.FilterGroup(0);
+    //     end;
+
 
 
 }

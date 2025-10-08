@@ -132,7 +132,6 @@ page 80503 "Aircraft card"
                 Image = Dimensions;
                 ShortCutKey = 'Alt+D';
                 ToolTip = 'View or edit dimensions, such as area, project, or department, that you can assign to sales and purchase documents to distribute costs and analyze transaction history.';
-
                 trigger OnAction()
                 begin
                     Rec.ShowDocDim();
@@ -140,8 +139,8 @@ page 80503 "Aircraft card"
                 end;
             }
         }
-    }
 
+    }
 
 
 
