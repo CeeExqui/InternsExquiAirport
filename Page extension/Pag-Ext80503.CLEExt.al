@@ -9,7 +9,6 @@ pageextension 80503 "CLE Ext" extends "Customer Ledger Entries"
         LoopTable: Record "Loops Demo";
     begin
         LoopTable.get();
-
         FinalView := strsubstno(ViewString, LoopTable.SetOrder, LoopTable.ChosenFieldFilter, LoopTable.FilterValue);
 
         // rr.gettable(REc);
