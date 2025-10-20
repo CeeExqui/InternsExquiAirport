@@ -380,8 +380,8 @@ page 80566 "Simulator"
         exit(false);
     end;
     /*
-    This procedure validates the FilterValue based on the selected sort field.
-    It ensures that date fields (Posting Date and Due Date) have valid date formats or date ranges.
+        This procedure validates the FilterValue based on the selected sort field.
+        It ensures that date fields (Posting Date and Due Date) have valid date formats or date ranges.
     */
     local procedure ValidateFilterValue()
     var
